@@ -28,7 +28,6 @@ const state = {
   rate: Number(localStorage.getItem('krwPerJpy')) || 8.6,
   cat: 'all',
   editing: null,
-  ordering: false,
 };
 // 같은 날 안의 순서: pos(순서 바꾸기로 정한 값)가 있으면 그걸, 없으면 기록한 시각(id). 큰 값이 위.
 // pos는 순서를 바꾼 날의 기록에만 붙는 선택 항목이라, 예전 기록은 그대로 읽힌다.
@@ -63,7 +62,6 @@ function render() {
   $('#split').textContent = shown.length ? `현금 ${yen(cash)} · 카드 ${yen(total - cash)}` : '';
   $('#rate').textContent = `환율 ¥100 = ${(state.rate * 100).toFixed(1)}원`;
 
-  $('#orderBtn').hidden = all.length < 2 && !state.ordering;
   if (!shown.length) {
     $('#list').innerHTML = `<li class="empty">${all.length ? '이 분류의 기록이 없어요.' : '아직 기록이 없어요.'}</li>`;
     return;
@@ -74,14 +72,13 @@ function render() {
     if (!days.has(e.date)) days.set(e.date, []);
     days.get(e.date).push(e);
   }
-  $('#list').classList.toggle('ordering', state.ordering);
   $('#list').innerHTML = [...days]
     .map(
       ([d, items]) => `<li class="day"><span>${dayLabel(d)}</span><span>${yen(sum(items))}</span></li>
       ${items
         .map(
-          (e, i) => `<li class="row" data-id="${esc(e.id)}">
-        <span class="move"><button type="button" data-move="-1" aria-label="위로"${i === 0 ? ' disabled' : ''}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 14l6-6 6 6" /></svg></button><button type="button" data-move="1" aria-label="아래로"${i === items.length - 1 ? ' disabled' : ''}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 10l6 6 6-6" /></svg></button></span>
+          (e) => `<li class="row" data-id="${esc(e.id)}" data-date="${esc(e.date)}">
+        <span class="grip" aria-label="끌어서 순서 바꾸기"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 9h14M5 15h14" /></svg></span>
         <span class="cat">${CAT[e.cat]}</span>
         <div class="what"><p class="memo">${esc(e.memo || CAT[e.cat])}</p><p class="pay">${PAY[e.pay]}</p></div>
         <div class="amt">${
@@ -132,32 +129,64 @@ $('#amt').addEventListener('input', updateConv);
 $('#addBtn').addEventListener('click', () => openEdit(null));
 $('#list').addEventListener('click', (e) => {
   const row = e.target.closest('.row');
-  if (!row) return;
-  const mv = e.target.closest('[data-move]');
-  if (mv) return move(Number(row.dataset.id), Number(mv.dataset.move));
-  if (!state.ordering) openEdit(state.list.find((x) => x.id === Number(row.dataset.id)));
+  if (!row || e.target.closest('.grip')) return;
+  openEdit(state.list.find((x) => x.id === Number(row.dataset.id)));
 });
 
-// 같은 날 안에서 한 칸 위(-1)·아래(+1)로. 그날 기록 전체에 화면 순서대로 pos를 다시 매긴다.
-function move(id, dir) {
+// ── 끌어서 순서 바꾸기 ──
+// 손잡이(=)를 누른 채 위아래로 끌면 같은 날 안에서 옮긴다. 놓으면 그날 기록 전체에 화면 순서대로 pos를 다시 매긴다.
+let drag = null;
+$('#list').addEventListener('pointerdown', (e) => {
+  const grip = e.target.closest('.grip');
+  if (!grip) return;
+  e.preventDefault();
+  const row = grip.closest('.row');
+  const rows = [...$('#list').querySelectorAll(`.row[data-date="${row.dataset.date}"]`)];
+  if (rows.length < 2) return;
+  const tops = rows.map((r) => r.getBoundingClientRect().top);
+  drag = { row, rows, tops, from: rows.indexOf(row), to: rows.indexOf(row), y0: e.clientY, h: row.getBoundingClientRect().height };
+  grip.setPointerCapture(e.pointerId);
+  row.classList.add('dragging');
+  document.body.classList.add('dragging');
+  rows.forEach((r) => r !== row && r.classList.add('shift'));
+});
+$('#list').addEventListener('pointermove', (e) => {
+  if (!drag) return;
+  const { row, rows, tops, from, h } = drag;
+  // 그날 맨 위·맨 아래 밖으로는 못 나가게
+  const min = tops[0] - tops[from];
+  const max = tops[rows.length - 1] - tops[from];
+  const dy = Math.max(min, Math.min(max, e.clientY - drag.y0));
+  row.style.transform = `translateY(${dy}px)`;
+  const center = tops[from] + dy + h / 2;
+  let to = from;
+  while (to > 0 && center <= tops[to - 1] + h / 2) to--;
+  while (to < rows.length - 1 && center >= tops[to + 1] + h / 2) to++;
+  drag.to = to;
+  rows.forEach((r, i) => {
+    if (r === row) return;
+    const shift = from < to && i > from && i <= to ? -h : from > to && i < from && i >= to ? h : 0;
+    r.style.transform = shift ? `translateY(${shift}px)` : '';
+  });
+});
+function endDrag() {
+  if (!drag) return;
+  const { rows, from, to } = drag;
+  drag = null;
+  document.body.classList.remove('dragging');
+  if (from === to) return render();
+  const ids = rows.map((r) => Number(r.dataset.id));
+  ids.splice(to, 0, ids.splice(from, 1)[0]);
   state.list = load();
-  const it = state.list.find((x) => x.id === id);
-  if (!it) return render();
-  const day = state.list.filter((x) => x.date === it.date).sort((a, b) => orderKey(b) - orderKey(a));
-  const i = day.indexOf(it);
-  const j = i + dir;
-  if (j < 0 || j >= day.length) return;
-  [day[i], day[j]] = [day[j], day[i]];
-  day.forEach((x, k) => (x.pos = day.length - k));
+  ids.forEach((id, k) => {
+    const x = state.list.find((it) => it.id === id);
+    if (x) x.pos = ids.length - k;
+  });
   save();
 }
-$('#orderBtn').addEventListener('click', () => {
-  state.ordering = !state.ordering;
-  $('#orderBtn').textContent = state.ordering ? '완료' : '순서 바꾸기';
-  $('#orderBtn').classList.toggle('on', state.ordering);
-  $('#addBtn').hidden = state.ordering;
-  render();
-});
+$('#list').addEventListener('pointerup', endDrag);
+$('#list').addEventListener('pointercancel', endDrag);
+
 $('#edit form').addEventListener('submit', () => {
   const amount = Number($('#amt').value);
   if (!amount) return;

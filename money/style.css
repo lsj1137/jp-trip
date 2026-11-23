@@ -32,8 +32,9 @@
   outline: none;
 }
 /* 아이폰 Safari의 날짜 칸은 기본 폭을 고집해서 창 밖으로 넘친다 → 기본 모양을 끄고 폭을 맞춘다 */
-#edit input[type="date"] { display: block; min-width: 0; max-width: 100%; -webkit-appearance: none; appearance: none; text-align: left; }
-#edit input[type="date"]::-webkit-date-and-time-value { text-align: left; }
+#edit input[type="date"] { display: block; min-width: 0; max-width: 100%; -webkit-appearance: none; appearance: none; text-align: left; line-height: 46px; }
+/* 기본 모양을 끄면 아이폰에서 날짜 글자가 칸 왼쪽 위에 붙는다 → 칸 높이 가운데로 */
+#edit input[type="date"]::-webkit-date-and-time-value { height: 46px; margin: 0; line-height: 46px; text-align: left; }
 #edit input:focus { box-shadow: inset 0 0 0 2px var(--blue); background: #fff; }
 #edit .amount { display: flex; gap: 8px; }
 #edit .amount input { flex: 1; min-width: 0; font-size: 20px; font-weight: 600; }
@@ -51,14 +52,10 @@
 #edit .actions [hidden] { display: none; }
 #edit .actions .primary { background: var(--text); color: #fff; }
 
-/* 순서 바꾸기 */
-.caption .btns { display: flex; gap: 6px; }
-.caption .btns [hidden] { display: none; }
-#orderBtn.on { background: var(--text); color: #fff; }
-.row .move { display: none; flex: none; gap: 4px; }
-#list.ordering .row { cursor: default; }
-#list.ordering .row:active { background: none; }
-#list.ordering .row .move { display: flex; }
-.row .move button { display: grid; place-items: center; width: 36px; height: 36px; border: 1px solid #e6dccd; border-radius: 9px; background: var(--paper, #fff); color: var(--text); cursor: pointer; }
-.row .move button:disabled { opacity: 0.3; cursor: default; }
-.row .move svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+/* 순서 바꾸기: 왼쪽 = 손잡이를 끌어서 같은 날 안에서 옮긴다 */
+.row .grip { display: grid; place-items: center; flex: none; width: 28px; height: 40px; margin: -8px -6px -8px -8px; color: #c9bfb2; cursor: grab; touch-action: none; -webkit-user-select: none; user-select: none; }
+.row .grip svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
+.row.dragging { position: relative; z-index: 2; background: var(--paper, #fff); box-shadow: 0 6px 18px rgba(47, 42, 38, 0.18); }
+.row.dragging .grip { cursor: grabbing; color: var(--sub); }
+.row.shift { transition: transform 0.15s ease; }
+body.dragging { -webkit-user-select: none; user-select: none; }
