@@ -376,7 +376,7 @@
         const [check, shop, liquor] = await Promise.all([get('check/data.json'), get('shop/data.json'), get('liquor/whiskies.json')]);
         const out = [`일본여행 기록 (${stamp()} 내보냄)`, ''];
 
-        const money = read('jp-money', []).sort((a, b) => a.date.localeCompare(b.date) || a.id - b.id);
+        const money = read('jp-money', []).sort((a, b) => a.date.localeCompare(b.date) || (a.pos ?? a.id) - (b.pos ?? b.id));
         const toYen = (e) => (e.cur === 'KRW' ? e.amount / rate : e.amount);
         const total = money.reduce((a, e) => a + toYen(e), 0);
         const cash = money.filter((e) => e.pay === 'cash').reduce((a, e) => a + toYen(e), 0);

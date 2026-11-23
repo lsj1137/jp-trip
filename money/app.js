@@ -28,7 +28,11 @@ const state = {
   rate: Number(localStorage.getItem('krwPerJpy')) || 8.6,
   cat: 'all',
   editing: null,
+  ordering: false,
 };
+// 같은 날 안의 순서: pos(순서 바꾸기로 정한 값)가 있으면 그걸, 없으면 기록한 시각(id). 큰 값이 위.
+// pos는 순서를 바꾼 날의 기록에만 붙는 선택 항목이라, 예전 기록은 그대로 읽힌다.
+const orderKey = (e) => e.pos ?? e.id;
 
 const yen = (n) => `¥${Math.round(n).toLocaleString('ja-JP')}`;
 const won = (n) => `${(Math.round(n / 100) * 100).toLocaleString('ko-KR')}원`;
@@ -59,22 +63,25 @@ function render() {
   $('#split').textContent = shown.length ? `현금 ${yen(cash)} · 카드 ${yen(total - cash)}` : '';
   $('#rate').textContent = `환율 ¥100 = ${(state.rate * 100).toFixed(1)}원`;
 
+  $('#orderBtn').hidden = all.length < 2 && !state.ordering;
   if (!shown.length) {
     $('#list').innerHTML = `<li class="empty">${all.length ? '이 분류의 기록이 없어요.' : '아직 기록이 없어요.'}</li>`;
     return;
   }
   // 날짜별로 묶고 최신 날짜가 위로
   const days = new Map();
-  for (const e of [...shown].sort((a, b) => b.date.localeCompare(a.date) || b.id - a.id)) {
+  for (const e of [...shown].sort((a, b) => b.date.localeCompare(a.date) || orderKey(b) - orderKey(a))) {
     if (!days.has(e.date)) days.set(e.date, []);
     days.get(e.date).push(e);
   }
+  $('#list').classList.toggle('ordering', state.ordering);
   $('#list').innerHTML = [...days]
     .map(
       ([d, items]) => `<li class="day"><span>${dayLabel(d)}</span><span>${yen(sum(items))}</span></li>
       ${items
         .map(
-          (e) => `<li class="row" data-id="${esc(e.id)}">
+          (e, i) => `<li class="row" data-id="${esc(e.id)}">
+        <span class="move"><button type="button" data-move="-1" aria-label="위로"${i === 0 ? ' disabled' : ''}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 14l6-6 6 6" /></svg></button><button type="button" data-move="1" aria-label="아래로"${i === items.length - 1 ? ' disabled' : ''}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 10l6 6 6-6" /></svg></button></span>
         <span class="cat">${CAT[e.cat]}</span>
         <div class="what"><p class="memo">${esc(e.memo || CAT[e.cat])}</p><p class="pay">${PAY[e.pay]}</p></div>
         <div class="amt">${
@@ -125,7 +132,31 @@ $('#amt').addEventListener('input', updateConv);
 $('#addBtn').addEventListener('click', () => openEdit(null));
 $('#list').addEventListener('click', (e) => {
   const row = e.target.closest('.row');
-  if (row) openEdit(state.list.find((x) => x.id === Number(row.dataset.id)));
+  if (!row) return;
+  const mv = e.target.closest('[data-move]');
+  if (mv) return move(Number(row.dataset.id), Number(mv.dataset.move));
+  if (!state.ordering) openEdit(state.list.find((x) => x.id === Number(row.dataset.id)));
+});
+
+// 같은 날 안에서 한 칸 위(-1)·아래(+1)로. 그날 기록 전체에 화면 순서대로 pos를 다시 매긴다.
+function move(id, dir) {
+  state.list = load();
+  const it = state.list.find((x) => x.id === id);
+  if (!it) return render();
+  const day = state.list.filter((x) => x.date === it.date).sort((a, b) => orderKey(b) - orderKey(a));
+  const i = day.indexOf(it);
+  const j = i + dir;
+  if (j < 0 || j >= day.length) return;
+  [day[i], day[j]] = [day[j], day[i]];
+  day.forEach((x, k) => (x.pos = day.length - k));
+  save();
+}
+$('#orderBtn').addEventListener('click', () => {
+  state.ordering = !state.ordering;
+  $('#orderBtn').textContent = state.ordering ? '완료' : '순서 바꾸기';
+  $('#orderBtn').classList.toggle('on', state.ordering);
+  $('#addBtn').hidden = state.ordering;
+  render();
 });
 $('#edit form').addEventListener('submit', () => {
   const amount = Number($('#amt').value);
@@ -142,6 +173,8 @@ $('#edit form').addEventListener('submit', () => {
   };
   localStorage.setItem('jp-money-pay', entry.pay);
   const i = state.list.findIndex((x) => x.id === entry.id);
+  const old = state.list[i];
+  if (old?.pos !== undefined && old.date === entry.date) entry.pos = old.pos;
   if (i >= 0) state.list[i] = entry;
   else state.list.push(entry);
   save();
