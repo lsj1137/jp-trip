@@ -1,0 +1,23 @@
+.caption #rate { color: var(--faint); }
+
+.row { padding: 14px 16px; cursor: pointer; }
+.row:active { background: var(--paper-press, #f9fafb); }
+.row .name { display: flex; align-items: center; gap: 6px; font-size: 16px; font-weight: 700; }
+.row .kind { flex: none; padding: 0 6px; border-radius: 5px; background: var(--field); color: var(--sub); font-size: 11px; font-style: normal; font-weight: 700; line-height: 1.7; }
+.row .ja { margin-top: 2px; font-size: 12px; color: var(--faint); }
+.prices { display: flex; flex-wrap: wrap; gap: 4px 14px; margin: 8px 0 0; padding: 0; list-style: none; }
+.prices li { display: flex; align-items: baseline; gap: 5px; font-size: 13px; color: var(--sub); }
+.prices b { font-size: 15px; color: var(--text); }
+.prices small { font-size: 12px; color: var(--faint); }
+
+.more { display: grid; grid-template-columns: 74px 1fr; gap: 8px 10px; margin: 14px 0 0; padding-top: 12px; border-top: 1px solid var(--line); font-size: 14px; line-height: 1.55; }
+.more dt { color: var(--sub); font-weight: 600; }
+.more dd { margin: 0; }
+.warn { margin-top: 10px; font-size: 13px; color: var(--red); }
+.link { display: inline-block; margin-top: 12px; padding: 7px 12px; border: 1px solid #e6dccd; border-radius: 9px; color: var(--text); font-size: 13px; font-weight: 600; text-decoration: none; }
+
+/* 간사이: 조이패스 지도로 가는 줄 */
+.link-row { padding: 0; }
+.link-row a { display: block; padding: 14px 16px; border-left: 3px solid var(--blue); color: var(--text); text-decoration: none; }
+.link-row b { display: block; font-size: 15px; }
+.link-row span { font-size: 13px; color: var(--sub); }

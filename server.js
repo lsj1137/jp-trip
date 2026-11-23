@@ -17,7 +17,7 @@ const API = { '/api/identify': identify, '/api/translate': translate, '/api/rate
 // nginx(jp-trip.conf): / 는 /trip/ 으로, /liquor/ 는 앞부분을 떼고(→ 아래의 '/'), 나머지는 그대로 넘겨준다.
 // 새 메뉴는 폴더를 만들고 APPS 에 이름만 추가하면 된다 (nginx 수정 불필요).
 // common/ 은 모든 앱이 같이 쓰는 디자인(theme.css)이라 각 앱 아래 /<앱>/common/ 으로도 연결한다.
-const APPS = ['trip', 'shop', 'kansai', 'talk', 'check', 'money'];
+const APPS = ['trip', 'shop', 'kansai', 'talk', 'check', 'money', 'pass'];
 const MOUNTS = [
   ...APPS.flatMap((app) => [
     [`/${app}/common/`, here('./common/')],

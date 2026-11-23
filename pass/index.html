@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#f7f1e7" />
+    <meta name="robots" content="noindex" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="패스 모음" />
+    <title>패스 모음</title>
+    <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="icon" href="icon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" />
+    <link rel="stylesheet" href="common/base.css" />
+    <link rel="stylesheet" href="style.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@700&display=swap" />
+    <link rel="stylesheet" href="common/theme.css" />
+  </head>
+  <body>
+    <header>
+      <div class="titlebar">
+        <h1><a class="back" href="/" aria-label="메인으로" onclick="var r=document.referrer;if(history.length>1&&r.indexOf(location.origin+'/')===0&&/^\/(trip\/)?([?#]|$)/.test(r.slice(location.origin.length))){history.back();return false}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" /></svg></a>패스 모음</h1>
+      </div>
+      <nav id="cats"></nav>
+    </header>
+
+    <main>
+      <div class="caption"><p id="count"></p><p id="rate"></p></div>
+      <ul id="list"></ul>
+    </main>
+
+    <footer><p id="asof"></p><p>가격은 세금 포함 성인 기준이에요. 바뀔 수 있으니 사기 전에 공식 사이트에서 한 번 더 확인하세요.</p></footer>
+
+    <script type="module" src="app.js"></script>
+  </body>
+</html>

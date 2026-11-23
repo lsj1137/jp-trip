@@ -316,6 +316,8 @@
         okinawa: ['오키나와', '나하'],
       };
       const MENUS = [
+        // region: '*' 는 지역을 고르면 어느 지역이든 나오는 메뉴 (그 지역 탭으로 열린다)
+        { href: 'pass/', title: '패스 모음', desc: '철도·버스·관광 패스 가격과 이럴 때 이득', region: '*' },
         { href: 'kansai/', title: '간사이 조이패스 지도', desc: '조이패스로 쓸 수 있는 시설·혜택 지도', region: 'kansai' },
         { href: 'shop/', title: '쇼핑 필수템', desc: '의약품·화장품·과자, 면세·반입 팁' },
         { href: 'liquor/', title: '술 가격 비교', desc: '위스키·사케·소주·와인 한국가 vs 일본가, 면세 장바구니' },
@@ -325,10 +327,11 @@
       ];
       const PIN = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5c-3.9 0-7 3-7 6.9 0 5.1 7 12.1 7 12.1s7-7 7-12.1c0-3.9-3.1-6.9-7-6.9z" fill="#c8432f"/><circle cx="12" cy="9.4" r="2.6" fill="#fffdf8"/></svg>';
       const $ = (s) => document.querySelector(s);
-      const hasMenu = new Set(MENUS.map((m) => m.region).filter(Boolean));
+      // 지도에서 따로 표시할 지역: 그 지역만의 메뉴가 있는 곳 (모든 지역 공통 메뉴 '*'는 빼고)
+      const hasMenu = new Set(MENUS.map((m) => m.region).filter((r) => r && r !== '*'));
       let region = REGIONS[localStorage.getItem('jp-region')] ? localStorage.getItem('jp-region') : null;
 
-      const card = (m) => `<li><a class="card" href="${m.href}">
+      const card = (m) => `<li><a class="card" href="${m.link ?? m.href}">
           <img src="${m.href}icon.svg" alt="" />
           <div><strong>${m.title}</strong><span>${m.desc}</span></div>
           <b class="go" aria-hidden="true">→</b>
@@ -339,7 +342,9 @@
         btn.innerHTML = `${PIN}<span>${region ? REGIONS[region][0] : '여행 지역'}</span><i class="caret">▾</i>`;
         btn.classList.toggle('unset', !region);
 
-        const regionMenus = MENUS.filter((m) => m.region && m.region === region);
+        const regionMenus = MENUS.filter((m) => region && (m.region === region || m.region === '*')).map((m) =>
+          m.region === '*' ? { ...m, title: `${REGIONS[region][0]} ${m.title}`, link: `${m.href}#${region}` } : m,
+        );
         $('#regionSec').hidden = !regionMenus.length;
         $('#regionCards').innerHTML = regionMenus.map(card).join('');
         $('#cards').innerHTML = MENUS.filter((m) => !m.region).map(card).join('');
