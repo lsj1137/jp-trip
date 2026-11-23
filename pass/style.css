@@ -1,23 +1,79 @@
-.caption #rate { color: var(--faint); }
+/* 패스 모음 목록: 메인 화면(trip/index.html)과 같은 화지 바탕·접힌 종이 카드 */
+:root {
+  --washi: #f7f1e7;
+  --paper: #fffdf8;
+  --paper-press: #f8f1e6;
+  --ink: #2f2a26;
+  --text: var(--ink);
+  --sub: #7a6f66;
+  --faint: #a2968b;
+  --line: #efe6d9;
+  --field: #f3ece0;
+  --red: #c8432f;
+  --blue: #3d5a80;
+  --sakura-deep: #d9849a;
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+html { touch-action: manipulation; }
+body {
+  margin: 0;
+  min-height: 100dvh;
+  color: var(--ink);
+  font: 15px/1.5 "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+  letter-spacing: -0.01em;
+  -webkit-font-smoothing: antialiased;
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9 .05' numOctaves='2' seed='3'/%3E%3CfeColorMatrix values='0 0 0 0 .45 0 0 0 0 .38 0 0 0 0 .3 0 0 0 .06 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23f)'/%3E%3C/svg%3E"),
+    var(--washi);
+}
+main { max-width: 480px; margin: 0 auto; padding: calc(24px + env(safe-area-inset-top)) 20px calc(40px + env(safe-area-inset-bottom)); }
 
-.row { padding: 14px 16px; cursor: pointer; }
-.row:active { background: var(--paper-press, #f9fafb); }
-.row .name { display: flex; align-items: center; gap: 6px; font-size: 16px; font-weight: 700; }
-.row .kind { flex: none; padding: 0 6px; border-radius: 5px; background: var(--field); color: var(--sub); font-size: 11px; font-style: normal; font-weight: 700; line-height: 1.7; }
-.row .ja { margin-top: 2px; font-size: 12px; color: var(--faint); }
-.prices { display: flex; flex-wrap: wrap; gap: 4px 14px; margin: 8px 0 0; padding: 0; list-style: none; }
-.prices li { display: flex; align-items: baseline; gap: 5px; font-size: 13px; color: var(--sub); }
-.prices b { font-size: 15px; color: var(--text); }
-.prices small { font-size: 12px; color: var(--faint); }
+.top { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 22px; }
+h1 { display: flex; align-items: center; gap: 2px; min-width: 0; margin: 0; font-family: "Gowun Batang", serif; font-size: 26px; font-weight: 700; letter-spacing: -0.02em; }
+h1 .back { display: inline-flex; align-items: center; justify-content: center; flex: none; width: 34px; height: 34px; margin-left: -10px; border-radius: 50%; color: inherit; }
+h1 .back svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+.loc { display: flex; align-items: center; gap: 5px; flex: none; height: 36px; padding: 0 12px 0 10px; border: 1px solid #e6dccd; border-radius: 18px; background: var(--paper); color: var(--ink); font: inherit; font-size: 14px; font-weight: 600; cursor: pointer; }
+.loc svg { width: 15px; height: 15px; }
+.loc .caret { color: var(--sub); font-size: 11px; font-style: normal; }
 
-.more { display: grid; grid-template-columns: 74px 1fr; gap: 8px 10px; margin: 14px 0 0; padding-top: 12px; border-top: 1px solid var(--line); font-size: 14px; line-height: 1.55; }
-.more dt { color: var(--sub); font-weight: 600; }
-.more dd { margin: 0; }
-.warn { margin-top: 10px; font-size: 13px; color: var(--red); }
-.link { display: inline-block; margin-top: 12px; padding: 7px 12px; border: 1px solid #e6dccd; border-radius: 9px; color: var(--text); font-size: 13px; font-weight: 600; text-decoration: none; }
+/* 접힌 종이 카드 */
+.cards { display: grid; gap: 14px; margin: 0; padding: 0; list-style: none; }
+.card {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 14px 14px 16px;
+  background: var(--paper);
+  filter: drop-shadow(0 1px 0 rgba(120, 90, 70, 0.12)) drop-shadow(0 8px 12px rgba(120, 90, 70, 0.1));
+  clip-path: polygon(0 0, calc(100% - 26px) 0, 100% 26px, 100% 100%, 0 100%);
+}
+.card::after { content: ""; position: absolute; top: 0; right: 0; width: 26px; height: 26px; background: linear-gradient(225deg, transparent 50%, #f3d3db 50%, #ecc2cd); }
+.card .main { display: flex; align-items: center; gap: 14px; flex: 1; min-width: 0; color: inherit; text-decoration: none; -webkit-tap-highlight-color: transparent; }
+.card .main:active { opacity: 0.7; }
+.card img { flex: none; width: 52px; height: 52px; border-radius: 12px; }
+.card strong { display: block; font-family: "Gowun Batang", serif; font-size: 18px; font-weight: 700; line-height: 1.35; }
+.card span { display: block; margin-top: 3px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 13px; color: var(--sub); }
+/* 오른쪽 작은 '이득' 버튼 */
+.card .gain { flex: none; align-self: flex-end; height: 30px; margin-top: 18px; padding: 0 10px; border: 1px solid #e6dccd; border-radius: 8px; background: var(--paper); color: var(--sub); font: inherit; font-size: 12.5px; font-weight: 700; cursor: pointer; }
+.card .gain:active { background: var(--field); }
 
-/* 간사이: 조이패스 지도로 가는 줄 */
-.link-row { padding: 0; }
-.link-row a { display: block; padding: 14px 16px; border-left: 3px solid var(--blue); color: var(--text); text-decoration: none; }
-.link-row b { display: block; font-size: 15px; }
-.link-row span { font-size: 13px; color: var(--sub); }
+.sec { margin: 28px 2px 10px; font-family: "Gowun Batang", serif; font-size: 17px; font-weight: 700; }
+.sec[hidden] { display: none; }
+.foot { margin: 28px 4px 0; font-size: 12px; color: var(--faint); }
+
+/* '이득' 창 내용 (common/ui.js 의 확인 창 안) */
+.pd-prices { display: grid; gap: 4px; margin: 0 0 12px; padding: 0; list-style: none; }
+.pd-prices li { display: flex; align-items: baseline; gap: 6px; font-size: 13.5px; }
+.pd-prices span { flex: 1; color: var(--sub); }
+.pd-prices b { color: var(--text); font-size: 15px; }
+.pd-prices small { width: 72px; text-align: right; color: var(--faint); }
+.pd-good { margin: 0 0 12px; padding: 10px 12px 10px 13px; border-left: 3px solid var(--blue); border-radius: 0 10px 10px 0; background: var(--paper-press); color: var(--text); }
+.pd-good b { display: block; margin-bottom: 2px; color: var(--blue); }
+.pd dl { display: grid; grid-template-columns: 56px 1fr; gap: 8px 10px; margin: 0; font-size: 13.5px; line-height: 1.55; }
+.pd dt { color: var(--sub); font-weight: 600; }
+.pd dd { margin: 0; color: var(--text); }
+.pd-warn { margin: 10px 0 0; color: var(--red); font-size: 13px; }
+.pd-link { display: inline-block; margin-top: 12px; padding: 7px 12px; border: 1px solid #e6dccd; border-radius: 9px; color: var(--text); font-size: 13px; font-weight: 600; text-decoration: none; }
+.ui-ask { overflow-y: auto; }

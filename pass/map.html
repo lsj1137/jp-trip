@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#f7f1e7" />
+    <meta name="robots" content="noindex" />
+    <title>패스 지도</title>
+    <link rel="icon" href="icon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@700&display=swap" />
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="map.css" />
+  </head>
+  <body class="mapview">
+    <!-- 패스 하나의 지도: 탈 수 있는 노선(색 선)과 주요 역·공항·관광지(점). 아래 시트에 장소 목록 -->
+    <div id="map"></div>
+    <div class="mhead">
+      <a class="mback" id="back" href="./" aria-label="패스 목록으로"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" /></svg></a>
+      <div class="mtitle"><strong id="name"></strong><span id="price"></span></div>
+      <button type="button" class="gain" id="gain">이득</button>
+    </div>
+    <section class="msheet min" id="sheet">
+      <button type="button" class="grip" id="grip" aria-label="목록 펼치기·접기"><i></i></button>
+      <div class="legend" id="legend"></div>
+      <ul class="spots" id="spots"></ul>
+    </section>
+    <p class="offline" id="offline" hidden>지도는 인터넷이 필요해요. 이득 버튼으로 패스 설명은 볼 수 있어요.</p>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script type="module" src="map.js"></script>
+  </body>
+</html>

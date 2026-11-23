@@ -14,28 +14,23 @@
     <link rel="apple-touch-icon" href="apple-touch-icon.png" />
     <link rel="preconnect" href="https://cdn.jsdelivr.net" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" />
-    <link rel="stylesheet" href="common/base.css" />
-    <link rel="stylesheet" href="style.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@700&display=swap" />
-    <link rel="stylesheet" href="common/theme.css" />
+    <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <header>
-      <div class="titlebar">
-        <h1><a class="back" href="/" aria-label="메인으로" onclick="var r=document.referrer;if(history.length>1&&r.indexOf(location.origin+'/')===0&&/^\/(trip\/)?([?#]|$)/.test(r.slice(location.origin.length))){history.back();return false}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" /></svg></a>패스 모음</h1>
-      </div>
-      <nav id="cats"></nav>
-    </header>
-
+    <!-- 메인 화면과 같은 종이 카드 모양. 카드 = 패스, 누르면 지도(map.html), 오른쪽 '이득' 버튼은 설명 창 -->
     <main>
-      <div class="caption"><p id="count"></p><p id="rate"></p></div>
-      <ul id="list"></ul>
+      <div class="top">
+        <h1><a class="back" href="/" aria-label="메인으로" onclick="var r=document.referrer;if(history.length>1&&r.indexOf(location.origin+'/')===0&&/^\/(trip\/)?([?#]|$)/.test(r.slice(location.origin.length))){history.back();return false}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" /></svg></a><span id="title">패스 모음</span></h1>
+        <button type="button" class="loc" id="regionBtn" aria-label="지역 바꾸기"></button>
+      </div>
+      <ul class="cards" id="cards"></ul>
+      <p class="sec" id="allSec" hidden>전국</p>
+      <ul class="cards" id="allCards"></ul>
+      <p class="foot" id="asof"></p>
     </main>
-
-    <footer><p id="asof"></p><p>가격은 세금 포함 성인 기준이에요. 바뀔 수 있으니 사기 전에 공식 사이트에서 한 번 더 확인하세요.</p></footer>
-
     <script type="module" src="app.js"></script>
   </body>
 </html>

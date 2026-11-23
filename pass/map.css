@@ -1,0 +1,36 @@
+/* 패스 지도: 지도가 화면 전체, 위에 제목 줄, 아래에 장소 시트 */
+body.mapview { height: 100dvh; overflow: hidden; }
+#map { position: fixed; inset: 0; z-index: 0; background: #ece6dc; }
+
+.mhead { position: fixed; z-index: 500; top: calc(10px + env(safe-area-inset-top)); left: 10px; right: 10px; display: flex; align-items: center; gap: 8px; padding: 8px 10px 8px 6px; border-radius: 14px; background: rgba(255, 253, 248, 0.96); box-shadow: 0 6px 18px rgba(47, 42, 38, 0.16); }
+.mback { display: grid; place-items: center; flex: none; width: 36px; height: 36px; border-radius: 50%; color: var(--ink); }
+.mback svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+.mtitle { flex: 1; min-width: 0; }
+.mtitle strong { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: "Gowun Batang", serif; font-size: 17px; }
+.mtitle span { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 12.5px; color: var(--sub); }
+.mhead .gain { flex: none; height: 32px; padding: 0 12px; border: 1px solid #e6dccd; border-radius: 9px; background: var(--paper); color: var(--ink); font: inherit; font-size: 13px; font-weight: 700; cursor: pointer; }
+
+/* 아래 시트: 접으면 범례만, 펼치면 장소 목록 */
+.msheet { position: fixed; z-index: 500; left: 0; right: 0; bottom: 0; display: flex; flex-direction: column; max-height: 46dvh; padding: 0 16px calc(10px + env(safe-area-inset-bottom)); border-radius: 18px 18px 0 0; background: var(--paper); box-shadow: 0 -8px 24px rgba(47, 42, 38, 0.14); transition: max-height 0.25s ease; }
+.msheet.min { max-height: calc(92px + env(safe-area-inset-bottom)); }
+.msheet .grip { display: grid; place-items: center; flex: none; width: 100%; height: 24px; border: 0; background: none; cursor: pointer; }
+.msheet .grip i { width: 40px; height: 4px; border-radius: 2px; background: #d9cfc2; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 12px; flex: none; padding-bottom: 8px; font-size: 12.5px; color: var(--sub); }
+.legend span { display: inline-flex; align-items: center; gap: 5px; }
+.legend i { width: 18px; height: 4px; border-radius: 2px; }
+.spots { flex: 1; min-height: 0; margin: 0; padding: 0; overflow-y: auto; overscroll-behavior: contain; list-style: none; }
+.spots li { display: flex; gap: 10px; padding: 10px 0; border-top: 1px solid var(--line); cursor: pointer; }
+.spots li:active { background: var(--paper-press); }
+.spots .dot { flex: none; width: 10px; height: 10px; margin-top: 6px; border-radius: 50%; }
+.spots b { display: block; font-size: 14.5px; }
+.spots b small { margin-left: 5px; font-size: 12px; font-weight: 500; color: var(--faint); }
+.spots p { margin: 2px 0 0; font-size: 13px; line-height: 1.45; color: var(--sub); }
+
+.offline { position: fixed; z-index: 600; left: 16px; right: 16px; top: 45%; margin: 0; padding: 14px; border-radius: 12px; background: var(--paper); text-align: center; color: var(--sub); box-shadow: 0 6px 18px rgba(47, 42, 38, 0.16); }
+.offline[hidden] { display: none; }
+
+/* 지도 위 장소 이름표 */
+.leaflet-tooltip.spot-tip { padding: 2px 6px; border: 0; border-radius: 6px; background: rgba(255, 253, 248, 0.92); color: var(--ink); font: 600 12px "Pretendard Variable", Pretendard, sans-serif; box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15); }
+.leaflet-tooltip.spot-tip::before { display: none; }
+.leaflet-popup-content { margin: 10px 12px; font: 13px/1.45 "Pretendard Variable", Pretendard, sans-serif; }
+.leaflet-popup-content b { font-size: 14px; }
