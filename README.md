@@ -11,7 +11,7 @@ https://jp-trip.stillim.dev — 일본 여행용 모바일 웹앱 여러 개(쇼
 | `check/` | `/check/` | 출입국 체크리스트 (출발 전·짐 규정·도착·면세·귀국), 내 짐(직접 적은 준비물을 갈 때·올 때 따로 체크. 쇼핑·술 앱에서 결제 완료한 물건은 올 때 목록과 여행 경비에 자동 추가) |
 | `money/` | `/money/` | 여행 경비 (엔/원 기록, 현금·카드, 원화 합계) |
 | `kansai/` | `/kansai/` | 간사이 조이패스 시설 지도 (간사이 선택 시) |
-| `pass/` | `/pass/` | 지방별 철도·버스·관광 패스 모음(가격·기간·범위·이럴 때 이득·사는 곳). 메인에서 지역을 고르면 '<지역> 패스 모음'으로 그 지역 탭이 열림. 데이터는 `research/passes-*.json` → `node research/passes.mjs` |
+| `pass/` | `/pass/` | 패스 모음: 메인과 같은 종이 카드 목록(카드=패스, 오른쪽 '이득' 버튼=가격·본전 예시 창), 카드를 누르면 `map.html#<패스id>` 지도(노선·역·관광지). 데이터는 `research/passes-*.json`·`passmap-*.json` → `node research/passes.mjs` |
 | `common/` | `/<앱>/common/` | 공통 디자인 `theme.css`, 새 앱 뼈대 `base.css`, 확인 창·알림 `ui.js`(기본 confirm/alert 대신), 앱 간 연결 `bag.js`(내 짐)·`money.js`(경비) |
 | `research/`, `scripts/` | — | 술 가격 조사·갱신, 조이패스 시설 수집, 일본 지도 생성(`build-japan-map.mjs`) |
 

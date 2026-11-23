@@ -1,7 +1,7 @@
 // 인터넷이 약한 곳에서도 열리게 앱 파일을 캐시한다.
 // 앱 파일을 바꿨는데 폰에 반영이 안 되면 CACHE 버전을 올린다.
 // 같은 도메인의 다른 앱 캐시를 지우지 않도록 자기 접두어(jp-pass-)로 시작하는 옛 캐시만 정리한다.
-const CACHE = 'jp-pass-v3';
+const CACHE = 'jp-pass-v4';
 const BASE = new URL('./', location).pathname;
 const SHELL = ['./', 'app.js', 'detail.js', 'style.css', 'map.html', 'map.js', 'map.css', 'common/ui.js', 'data.json', 'manifest.webmanifest', 'icon-192.png', 'icon.svg', 'icons/rail.svg', 'icons/bus.svg', 'icons/sight.svg', 'icons/railsight.svg'];
 
